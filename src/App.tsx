@@ -1,5 +1,4 @@
 import React from "react";
-import logo from "./logo.svg";
 import "./App.css";
 import { DigiClock } from "./DigiClock";
 
@@ -13,6 +12,7 @@ function App() {
   return (
     <div className="App">
       <div className="App-header">
+        <pre>local time</pre>
         <DigiClock time={time} />
       </div>
     </div>
