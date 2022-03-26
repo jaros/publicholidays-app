@@ -2,12 +2,45 @@ import React from "react";
 import "./App.css";
 import Select from "react-select";
 
+type HolidayType = {
+  name: string;
+  localName: string;
+  date: string;
+};
+
+const Holiday: React.FC<HolidayType> = ({ name, localName, date }) => {
+  return (
+    <div className="formField">
+      <div>
+        <span>Date: &nbsp;</span>
+        <span>{date}</span>
+      </div>
+      <div>
+        <span>Name: &nbsp;</span>
+        <span>{name}</span>
+      </div>
+      <div>
+        <span>Local Name: &nbsp;</span>
+        <span>{localName}</span>
+      </div>
+    </div>
+  );
+};
+
 function App() {
   const [year, setYear] = React.useState(2022);
   const [country, setCountry] = React.useState("US");
+  const [holidays, setHolidays] = React.useState<HolidayType[]>([]);
 
   const search = () => {
     console.log("clicked search", year, country);
+    setHolidays([
+      {
+        date: "01.01.2022",
+        name: "new year",
+        localName: "New Year",
+      },
+    ]);
   };
 
   return (
@@ -40,6 +73,12 @@ function App() {
           </div>
           <div className="formField">
             <button onClick={search}>Search!</button>
+          </div>
+
+          <div className="formField">
+            {holidays.map(({ date, name, localName }) => (
+              <Holiday date={date} name={name} localName={localName} key={name} />
+            ))}
           </div>
         </div>
       </div>
