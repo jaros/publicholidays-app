@@ -1,18 +1,10 @@
 import React from "react";
 import "./App.css";
-import { DigiClock } from "./DigiClock";
 import Select from "react-select";
 
 function App() {
-  const [time, setTime] = React.useState(new Date());
-
   const [year, setYear] = React.useState(2022);
-  const [country, setCountry] = React.useState("us");
-
-  React.useEffect(() => {
-    const timer = setInterval(() => setTime(new Date()), 1000);
-    return () => clearInterval(timer);
-  });
+  const [country, setCountry] = React.useState("US");
 
   const search = () => {
     console.log("clicked search", year, country);
@@ -21,13 +13,12 @@ function App() {
   return (
     <div className="App">
       <div className="App-header">
-        <pre>local time</pre>
-        <DigiClock time={time} />
         <div style={{ paddingTop: 50 }}>
           <div>Public holidays for country by year</div>
           <div className="formField">
-            Year:{" "}
             <Select
+              placeholder="Year"
+              value={{ label: year, value: year }}
               options={allYears.map((year) => ({ value: year, label: year }))}
               onChange={(option) =>
                 option ? setYear(option.value) : undefined
@@ -35,8 +26,9 @@ function App() {
             />
           </div>
           <div className="formField">
-            Country:{" "}
             <Select
+              placeholder="Country"
+              value={{ label: allCountries[country], value: country }}
               options={Object.entries(allCountries).map(([code, name]) => ({
                 value: code,
                 label: name,
@@ -59,7 +51,7 @@ export default App;
 
 const allYears = [2021, 2022, 2023];
 
-const allCountries = {
+const allCountries: { [code: string]: string } = {
   AF: "Afghanistan",
   AX: "Aland Islands",
   AL: "Albania",
