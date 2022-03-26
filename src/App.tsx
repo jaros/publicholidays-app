@@ -1,12 +1,20 @@
 import React from "react";
 import "./App.css";
 import Select from "react-select";
+import { gql, useQuery } from "@apollo/client";
 
 type HolidayType = {
   name: string;
   localName: string;
   date: string;
 };
+
+type HolidayRequest = {
+  year: number;
+  country: string;
+};
+
+type HolidayData = { publicHolidays: Array<HolidayType & {types: string[]}> };
 
 const Holiday: React.FC<HolidayType> = ({ name, localName, date }) => {
   return (
@@ -27,20 +35,49 @@ const Holiday: React.FC<HolidayType> = ({ name, localName, date }) => {
   );
 };
 
+const PUBLIC_HOLIDAYS = gql`
+  query GetPublicHolidays($year: Int!, $country: String!) {
+    publicHolidays(year: $year, country: $country) {
+      date
+      name
+      localName,
+      types
+    }
+  }
+`;
+
+const Holidays: React.FC<{ year: number; country: string }> = ({
+  year,
+  country,
+}) => {
+  const { loading, error, data } = useQuery<HolidayData, HolidayRequest>(
+    PUBLIC_HOLIDAYS,
+    {
+      variables: { year, country },
+    }
+  );
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error :(</p>;
+
+  return (
+    <div>
+      {data &&
+        data.publicHolidays.map(({ date, name, localName, types }) => (
+          <Holiday date={date} name={name} localName={localName} key={name+types} />
+        ))}
+    </div>
+  );
+};
+
 function App() {
   const [year, setYear] = React.useState(2022);
   const [country, setCountry] = React.useState("US");
-  const [holidays, setHolidays] = React.useState<HolidayType[]>([]);
+  const [searching, setSearching] = React.useState(false);
 
   const search = () => {
     console.log("clicked search", year, country);
-    setHolidays([
-      {
-        date: "01.01.2022",
-        name: "new year",
-        localName: "New Year",
-      },
-    ]);
+    setSearching(true);
   };
 
   return (
@@ -76,9 +113,7 @@ function App() {
           </div>
 
           <div className="formField">
-            {holidays.map(({ date, name, localName }) => (
-              <Holiday date={date} name={name} localName={localName} key={name} />
-            ))}
+            {searching && <Holidays country={country} year={year} />}
           </div>
         </div>
       </div>
