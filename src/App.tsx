@@ -5,14 +5,18 @@ import Select from "react-select";
 
 function App() {
   const [time, setTime] = React.useState(new Date());
+
+  const [year, setYear] = React.useState(2022);
+  const [country, setCountry] = React.useState("us");
+
   React.useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000);
     return () => clearInterval(timer);
   });
 
   const search = () => {
-    console.log("clicked search")
-  }
+    console.log("clicked search", year, country);
+  };
 
   return (
     <div className="App">
@@ -25,6 +29,9 @@ function App() {
             Year:{" "}
             <Select
               options={allYears.map((year) => ({ value: year, label: year }))}
+              onChange={(option) =>
+                option ? setYear(option.value) : undefined
+              }
             />
           </div>
           <div className="formField">
@@ -34,6 +41,9 @@ function App() {
                 value: code,
                 label: name,
               }))}
+              onChange={(option) =>
+                option ? setCountry(option.value) : undefined
+              }
             />
           </div>
           <div className="formField">
