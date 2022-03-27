@@ -12,5 +12,5 @@ taken from https://www.apollographql.com/docs/react/development-testing/develope
 
 - `npm install -g apollo-codegen`
 - `apollo-codegen introspect-schema http://localhost:4000 --output schema.json`
-- `apollo-codegen generate **/*.graphql --schema schema.json --target typescript --output src/graphql/operation-result-types.ts`
+- `apollo-codegen generate src/graphql/**/*.ts --schema schema.json --target typescript --output src/graphql/operation-result-types.ts`
 

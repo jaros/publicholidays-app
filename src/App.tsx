@@ -6,19 +6,13 @@ import {
   GetPublicHolidays,
   GetPublicHolidaysVariables,
 } from "./graphql/operation-result-types";
+import {GET_PUBLIC_HOLIDAYS_QUERY} from "./graphql/query/GetPublicHolidays";
 
 type HolidayType = {
   name: string;
   localName: string;
   date: string;
 };
-
-// type HolidayRequest = {
-//   year: number;
-//   country: string;
-// };
-
-// type HolidayData = { publicHolidays: Array<HolidayType & {types: string[]}> };
 
 const Holiday: React.FC<HolidayType> = ({ name, localName, date }) => {
   return (
@@ -39,16 +33,6 @@ const Holiday: React.FC<HolidayType> = ({ name, localName, date }) => {
   );
 };
 
-const PUBLIC_HOLIDAYS = gql`
-  query GetPublicHolidays($year: Int!, $country: String!) {
-    publicHolidays(year: $year, country: $country) {
-      date
-      name
-      localName
-      types
-    }
-  }
-`;
 
 const Holidays: React.FC<{ year: number; country: string }> = ({
   year,
@@ -57,7 +41,7 @@ const Holidays: React.FC<{ year: number; country: string }> = ({
   const { loading, error, data } = useQuery<
     GetPublicHolidays,
     GetPublicHolidaysVariables
-  >(PUBLIC_HOLIDAYS, {
+  >(GET_PUBLIC_HOLIDAYS_QUERY, {
     variables: { year, country },
   });
 

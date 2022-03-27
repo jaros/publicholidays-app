@@ -1,8 +1,0 @@
-query GetPublicHolidays($year: Int!, $country: String!) {
-    publicHolidays(year: $year, country: $country) {
-      date
-      name
-      localName,
-      types
-    }
-  }
