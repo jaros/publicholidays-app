@@ -1,48 +1,48 @@
+import { useQuery } from "@apollo/client";
 import React from "react";
-import "./App.css";
 import Select from "react-select";
-import { gql, useQuery } from "@apollo/client";
+import "./App.css";
+import { allCountries } from "./countryCodes";
 import {
-  GetPublicHolidays,
-  GetPublicHolidaysVariables,
+  GetDateHolidays,
+  GetDateHolidaysVariables,
+  GetDateHolidays_dateHolidays,
 } from "./graphql/operation-result-types";
-import {GET_PUBLIC_HOLIDAYS_QUERY} from "./graphql/query/GetPublicHolidays";
-import {allCountries} from "./countryCodes";
+import { GET_DATE_HOLIDAYS_QUERY } from "./graphql/query/GetDateHolidays";
 
-type HolidayType = {
-  name: string;
-  localName: string;
-  date: string;
-};
-
-const Holiday: React.FC<HolidayType> = ({ name, localName, date }) => {
+const Holiday: React.FC<{ data: GetDateHolidays_dateHolidays }> = ({
+  data,
+}) => {
   return (
     <div className="formField">
       <div>
         <span>Date: &nbsp;</span>
-        <span>{date}</span>
+        <span>{data.date}</span>
       </div>
       <div>
         <span>Name: &nbsp;</span>
-        <span>{name}</span>
+        <span>{data.name}</span>
       </div>
       <div>
         <span>Local Name: &nbsp;</span>
-        <span>{localName}</span>
+        <span>{data.localName}</span>
+      </div>
+      <div>
+        <span>Type: &nbsp;</span>
+        <span>{data.type}</span>
       </div>
     </div>
   );
 };
-
 
 const Holidays: React.FC<{ year: number; country: string }> = ({
   year,
   country,
 }) => {
   const { loading, error, data } = useQuery<
-    GetPublicHolidays,
-    GetPublicHolidaysVariables
-  >(GET_PUBLIC_HOLIDAYS_QUERY, {
+    GetDateHolidays,
+    GetDateHolidaysVariables
+  >(GET_DATE_HOLIDAYS_QUERY, {
     variables: { year, country },
   });
 
@@ -52,13 +52,8 @@ const Holidays: React.FC<{ year: number; country: string }> = ({
   return (
     <div>
       {data &&
-        data.publicHolidays.map(({ date, name, localName, types }) => (
-          <Holiday
-            date={date}
-            name={name}
-            localName={localName}
-            key={name + types}
-          />
+        data.dateHolidays.map((data) => (
+          <Holiday data={data} key={data.name + data.type} />
         ))}
     </div>
   );
@@ -118,4 +113,3 @@ function App() {
 export default App;
 
 const allYears = [2021, 2022, 2023];
-
