@@ -2,6 +2,10 @@ import React from "react";
 import "./App.css";
 import Select from "react-select";
 import { gql, useQuery } from "@apollo/client";
+import {
+  GetPublicHolidays,
+  GetPublicHolidaysVariables,
+} from "./graphql/operation-result-types";
 
 type HolidayType = {
   name: string;
@@ -9,12 +13,12 @@ type HolidayType = {
   date: string;
 };
 
-type HolidayRequest = {
-  year: number;
-  country: string;
-};
+// type HolidayRequest = {
+//   year: number;
+//   country: string;
+// };
 
-type HolidayData = { publicHolidays: Array<HolidayType & {types: string[]}> };
+// type HolidayData = { publicHolidays: Array<HolidayType & {types: string[]}> };
 
 const Holiday: React.FC<HolidayType> = ({ name, localName, date }) => {
   return (
@@ -40,7 +44,7 @@ const PUBLIC_HOLIDAYS = gql`
     publicHolidays(year: $year, country: $country) {
       date
       name
-      localName,
+      localName
       types
     }
   }
@@ -50,12 +54,12 @@ const Holidays: React.FC<{ year: number; country: string }> = ({
   year,
   country,
 }) => {
-  const { loading, error, data } = useQuery<HolidayData, HolidayRequest>(
-    PUBLIC_HOLIDAYS,
-    {
-      variables: { year, country },
-    }
-  );
+  const { loading, error, data } = useQuery<
+    GetPublicHolidays,
+    GetPublicHolidaysVariables
+  >(PUBLIC_HOLIDAYS, {
+    variables: { year, country },
+  });
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
@@ -64,7 +68,12 @@ const Holidays: React.FC<{ year: number; country: string }> = ({
     <div>
       {data &&
         data.publicHolidays.map(({ date, name, localName, types }) => (
-          <Holiday date={date} name={name} localName={localName} key={name+types} />
+          <Holiday
+            date={date}
+            name={name}
+            localName={localName}
+            key={name + types}
+          />
         ))}
     </div>
   );
